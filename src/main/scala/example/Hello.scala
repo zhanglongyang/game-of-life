@@ -1,9 +1,10 @@
 package example
 
-object Hello extends Greeting with App {
-  println(greeting)
-}
+import scala.scalajs.js.JSApp
+import scala.scalajs.js.annotation.JSExport
 
-trait Greeting {
-  lazy val greeting: String = "hello"
+object Hello extends JSApp with App {
+
+  @JSExport
+  override def main(): Unit = println("Hello World!")
 }
