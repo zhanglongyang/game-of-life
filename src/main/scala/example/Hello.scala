@@ -14,10 +14,16 @@ object Hello extends JSApp with App {
     appendPar(document.body, "Hello World")
   }
 
+  @JSExport
+  def addClickedMessage(): Unit = {
+    appendPar(document.body, "You clicked the button!")
+  }
+
   def appendPar(targetNode: dom.Node, text: String): Unit = {
     val parNode = document.createElement("p")
     val textNode = document.createTextNode(text)
     parNode.appendChild(textNode)
     targetNode.appendChild(parNode)
   }
+  
 }
