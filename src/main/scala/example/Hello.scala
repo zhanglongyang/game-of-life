@@ -25,5 +25,5 @@ object Hello extends JSApp with App {
     parNode.appendChild(textNode)
     targetNode.appendChild(parNode)
   }
-  
+
 }

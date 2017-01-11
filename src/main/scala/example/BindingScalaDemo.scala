@@ -1,15 +1,21 @@
-package io.longyang
+package example
 
 import com.thoughtworks.binding.{Binding, dom}
 import com.thoughtworks.binding.Binding.{Var, Vars}
 import org.scalajs.dom.html.Table
+import org.scalajs.dom.document
 
+import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
 
-class BindingScalaDemo {
+object BindingScalaDemo extends JSApp with App {
+
   case class Contact(name: Var[String], email: Var[String])
 
-  val data = Vars.empty[Contact]
+  val data = Vars(
+    Contact(Var("Steve"), Var("steve@apple.com")),
+    Contact(Var("Bill"), Var("bill@microsoft.com"))
+  )
 
   @dom
   def table: Binding[Table] = {
@@ -32,9 +38,10 @@ class BindingScalaDemo {
       </tbody>
     </table>
   }
-  
-//  @JSExport
-//  def main(): Unit = {
-//    dom.render(document.body, table)
-//  }
+
+  @JSExport
+  def main(): Unit = {
+    dom.render(document.body, table)
+  }
+
 }
