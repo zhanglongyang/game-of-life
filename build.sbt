@@ -11,5 +11,6 @@ lazy val root = (project in file(".")).
     name := "Hello",
     libraryDependencies += scalaTest % Test,
     libraryDependencies += "com.thoughtworks.binding" %%% "dom" % "latest.release",
+    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1",
     addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
   )
