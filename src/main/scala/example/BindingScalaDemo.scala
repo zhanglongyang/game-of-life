@@ -12,13 +12,13 @@ object BindingScalaDemo extends JSApp {
 
   case class Contact(name: Var[String], email: Var[String])
 
+  val data = Vars(
+    Contact(Var("Steve"), Var("steve@apple.com")),
+    Contact(Var("Bill"), Var("bill@microsoft.com"))
+  )
+
   @dom
   def table: Binding[Table] = {
-    val data = Vars(
-      Contact(Var("Steve"), Var("steve@apple.com")),
-      Contact(Var("Bill"), Var("bill@microsoft.com"))
-    )
-
     <table border="1" cellPadding="5">
       <thead>
         <tr>
