@@ -1,14 +1,14 @@
 package example
 
-import com.thoughtworks.binding.{Binding, dom}
 import com.thoughtworks.binding.Binding.{Var, Vars}
-import org.scalajs.dom.html.Table
+import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.document
+import org.scalajs.dom.html.Table
 
-import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
 
-object BindingScalaDemo extends JSApp with App {
+@JSExport
+object BindingScalaDemo {
 
   case class Contact(name: Var[String], email: Var[String])
 
