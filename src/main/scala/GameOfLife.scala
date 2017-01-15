@@ -9,10 +9,24 @@ import scala.util.Random
 
 object GameOfLife extends JSApp {
 
-  case class Location(x: Integer, y: Integer)
+  case class Location(x: Integer, y: Integer) {
+    def isNeighbourOf(loc: Location): Boolean = {
+      (Math.abs(this.x - loc.x) <= 1 && Math.abs(this.y - loc.y) <= 1) && !(this.equals(loc))
+    }
+  }
 
   case class Cell(status: Var[String], location: Location) {
     def isAlive: Boolean = this.status.get.eq("1")
+
+    def aliveNeighbours: BindingSeq[Cell] = {
+      for (
+        row <- data.cells;
+        cell <- row
+        if cell.isAlive && this.location.isNeighbourOf(cell.location)
+      ) yield {
+        cell
+      }
+    }
   }
 
   case class World(cells: Vars[Vars[Cell]])
@@ -41,7 +55,9 @@ object GameOfLife extends JSApp {
       {for (row <- data.cells) yield {
       <tr>
         {for (cell <- row) yield {
-        <td style={s"width: 20px; height: 20px; ${if (cell.status.get.eq("1")) "background-color: black"}"}>
+        <td style={s"width: 20px; height: 20px; " +
+//          s"${if (cell.location.x > 1) "background-color: grey"} " +
+          s"${if (cell.aliveNeighbours.bind.size > 1) "background-color: red"}"}>
         </td>
       }}
       </tr>
