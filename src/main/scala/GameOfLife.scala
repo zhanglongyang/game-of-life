@@ -1,7 +1,7 @@
-import com.thoughtworks.binding.Binding.{Var, Vars}
+import com.thoughtworks.binding.Binding.{BindingSeq, Var, Vars}
 import com.thoughtworks.binding.{Binding, dom}
-import org.scalajs.dom.document
-import org.scalajs.dom.html.Table
+import org.scalajs.dom.raw.Event
+import org.scalajs.dom.{Node, document}
 
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
@@ -9,26 +9,10 @@ import scala.scalajs.js.annotation.JSExport
 object GameOfLife extends JSApp {
 
   case class Location(x: Var[Integer], y: Var[Integer])
+
   case class Cell(status: Var[String], location: Location)
 
-  @dom
-  def space: Binding[Table] = {
-    <table border="1" cellPadding="5">
-      <tbody>
-        {for (row <- lives) yield {
-        <tr style="text-align: center">
-          {row.map { cell =>
-          <td style="width: 20px; height: 20px">
-            {cell.status.bind}
-          </td>
-          }}
-        </tr>
-        }}
-      </tbody>
-    </table>
-  }
-
-  def lives: Vars[Vars[Cell]] = {
+  val lives = {
     Vars(
       Vars(
         Cell(Var("0"), Location(Var(0), Var(0))),
@@ -63,8 +47,41 @@ object GameOfLife extends JSApp {
     )
   }
 
+  @dom
+  def world: Binding[BindingSeq[Node]] = {
+    <table border="1" cellPadding="5">
+      <tbody>
+        {for (row <- lives) yield {
+        <tr style="text-align: center">
+          {row.map { cell =>
+          <td style="width: 20px; height: 20px">
+            <a href="#" onclick={event: Event =>
+              cell.status := "0"
+            }>
+              {cell.status.bind}
+            </a>
+          </td>
+        }}
+        </tr>
+      }}
+      </tbody>
+    </table>
+    <br></br>
+    <button onclick={event: Event =>
+      lives.get += Vars(
+        Cell(Var("1"), Location(Var(0), Var(5))),
+        Cell(Var("0"), Location(Var(1), Var(5))),
+        Cell(Var("1"), Location(Var(2), Var(5))),
+        Cell(Var("0"), Location(Var(3), Var(5))),
+        Cell(Var("1"), Location(Var(4), Var(5)))
+      )}>
+      Evolve
+    </button>
+  }
+
+
   @JSExport
   override def main(): Unit = {
-    dom.render(document.body, space)
+    dom.render(document.body, world)
   }
 }
