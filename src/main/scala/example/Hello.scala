@@ -11,7 +11,11 @@ object Hello extends JSApp with App {
   @JSExport
   override def main(): Unit = {
     println("Hello World!")
-    appendPar(document.body, "Hello World")
+    appendPar(document.body, greeting + " World")
+  }
+
+  def greeting: String = {
+    "hello"
   }
 
   @JSExport

@@ -8,80 +8,55 @@ import scala.scalajs.js.annotation.JSExport
 
 object GameOfLife extends JSApp {
 
-  case class Location(x: Var[Integer], y: Var[Integer])
+  case class Location(x: Integer, y: Integer)
 
-  case class Cell(status: Var[String], location: Location)
-
-  val lives = {
-    Vars(
-      Vars(
-        Cell(Var("0"), Location(Var(0), Var(0))),
-        Cell(Var("1"), Location(Var(1), Var(0))),
-        Cell(Var("0"), Location(Var(2), Var(0))),
-        Cell(Var("1"), Location(Var(3), Var(0))),
-        Cell(Var("0"), Location(Var(4), Var(0)))),
-      Vars(
-        Cell(Var("0"), Location(Var(0), Var(1))),
-        Cell(Var("1"), Location(Var(1), Var(1))),
-        Cell(Var("0"), Location(Var(2), Var(1))),
-        Cell(Var("0"), Location(Var(3), Var(1))),
-        Cell(Var("0"), Location(Var(4), Var(1)))),
-      Vars(
-        Cell(Var("0"), Location(Var(0), Var(2))),
-        Cell(Var("0"), Location(Var(1), Var(2))),
-        Cell(Var("0"), Location(Var(2), Var(2))),
-        Cell(Var("1"), Location(Var(3), Var(2))),
-        Cell(Var("0"), Location(Var(4), Var(2)))),
-      Vars(
-        Cell(Var("0"), Location(Var(0), Var(3))),
-        Cell(Var("1"), Location(Var(1), Var(3))),
-        Cell(Var("1"), Location(Var(2), Var(3))),
-        Cell(Var("1"), Location(Var(3), Var(3))),
-        Cell(Var("0"), Location(Var(4), Var(3)))),
-      Vars(
-        Cell(Var("0"), Location(Var(0), Var(4))),
-        Cell(Var("0"), Location(Var(1), Var(4))),
-        Cell(Var("0"), Location(Var(2), Var(4))),
-        Cell(Var("1"), Location(Var(3), Var(4))),
-        Cell(Var("0"), Location(Var(4), Var(4))))
-    )
+  case class Cell(status: Var[String], location: Location) {
+    def isAlive: Boolean = this.status.get.eq("1")
   }
+
+  case class World(cells: Vars[Vars[Cell]])
+
+  val size = 9
+
+  val data: World = World({
+    var vv = Vars.empty[Vars[Cell]]
+    for (i <- 0 to size) yield {
+      var ww = Vars.empty[Cell]
+      for (j <- 0 to size) yield {
+        ww.get += Cell(Var("0"), Location(i, j))
+      }
+      vv.get += ww
+    }
+    vv
+  })
 
   @dom
   def world: Binding[BindingSeq[Node]] = {
     <table border="1" cellPadding="5">
-      <tbody>
-        {for (row <- lives) yield {
-        <tr style="text-align: center">
-          {row.map { cell =>
-          <td style="width: 20px; height: 20px">
-            <a href="#" onclick={event: Event =>
-              cell.status := "0"
-            }>
-              {cell.status.bind}
-            </a>
-          </td>
-        }}
-        </tr>
+      {for (row <- data.cells) yield {
+      <tr>
+        {for (cell <- row) yield {
+        <td style={s"width: 20px; height: 20px; ${if (cell.status.get.eq("1")) "background-color: black"}"}>
+        </td>
       }}
-      </tbody>
+      </tr>
+    }}
     </table>
-    <br></br>
-    <button onclick={event: Event =>
-      lives.get += Vars(
-        Cell(Var("1"), Location(Var(0), Var(5))),
-        Cell(Var("0"), Location(Var(1), Var(5))),
-        Cell(Var("1"), Location(Var(2), Var(5))),
-        Cell(Var("0"), Location(Var(3), Var(5))),
-        Cell(Var("1"), Location(Var(4), Var(5)))
-      )}>
-      Evolve
-    </button>
+      <br></br>
+      <button onclick={event: Event =>
+        data.cells.get += Vars(
+          Cell(Var("1"), Location(0, 5)),
+          Cell(Var("0"), Location(1, 5)),
+          Cell(Var("1"), Location(2, 5)),
+          Cell(Var("0"), Location(3, 5)),
+          Cell(Var("1"), Location(4, 5)))}>
+        Evolve
+      </button>
   }
-
 
   @JSExport
   override def main(): Unit = {
     dom.render(document.body, world)
   }
 }
+
