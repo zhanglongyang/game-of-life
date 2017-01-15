@@ -5,6 +5,7 @@ import org.scalajs.dom.{Node, document}
 
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
+import scala.util.Random
 
 object GameOfLife extends JSApp {
 
@@ -23,12 +24,16 @@ object GameOfLife extends JSApp {
     for (i <- 0 to size) yield {
       var ww = Vars.empty[Cell]
       for (j <- 0 to size) yield {
-        ww.get += Cell(Var("0"), Location(i, j))
+        ww.get += Cell(Var(randomStatus), Location(i, j))
       }
       vv.get += ww
     }
     vv
   })
+
+  def randomStatus: String = {
+    Random.nextInt(7).toString
+  }
 
   @dom
   def world: Binding[BindingSeq[Node]] = {
