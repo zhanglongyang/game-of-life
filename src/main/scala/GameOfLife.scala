@@ -1,7 +1,7 @@
-import com.thoughtworks.binding.Binding.{BindingSeq, Var}
+import com.thoughtworks.binding.Binding.Var
 import com.thoughtworks.binding.{Binding, dom}
-import org.scalajs.dom.raw.Event
-import org.scalajs.dom.{Node, document}
+import org.scalajs.dom.document
+import org.scalajs.dom.html.Table
 
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
@@ -17,63 +17,38 @@ object GameOfLife extends JSApp {
 
   case class Cell(status: Var[String], location: Location) {
     def isAlive: Boolean = this.status.get.eq("1")
-
-//    def aliveNeighbours: BindingSeq[Cell] = {
-//      for (
-//        row <- data.cells;
-//        cell <- row
-//        if cell.isAlive && this.location.isNeighbourOf(cell.location)
-//      ) yield {
-//        cell
-//      }
-//    }
   }
 
-  case class World(cells: List[List[Cell]])
+  case class World(cells: List[Cell])
 
-  val size = 9
+  val size = 20
 
-  val data: World = World(
-    List(
-      List(
-        Cell(Var(randomStatus), Location(0, 0)),
-        Cell(Var(randomStatus), Location(0, 1))
-      ),
-      List(
-        Cell(Var(randomStatus), Location(1, 0)),
-        Cell(Var(randomStatus), Location(1, 1))
-      )
-    )
-  )
+  val data = World(({
+    for (i <- 0 to size - 1; j <- 0 to size - 1) yield {
+      Cell(Var(randomStatus), Location(i, j))
+    }
+  }).toList)
 
   def randomStatus: String = {
     Random.nextInt(7).toString
   }
 
   @dom
-  def world: Binding[BindingSeq[Node]] = {
+  def world: Binding[Table] = {
     <table border="1" cellPadding="5">
       {
         import scalaz.std.list._
-        data.cells.map(row => {
+        data.cells.grouped(size).toList.map(row => {
           <tr>
             {
               row.map(cell => {
-                <td>{cell.status.bind}</td>
+                <td style={s"width: 20px; height: 20px; ${if (cell.status.get.eq("1")) "background-color: black"}"}></td>
               })
             }
           </tr>
         })
       }
     </table>
-
-    <br></br>
-
-    <button onclick={event: Event =>
-
-      }>
-      Evolve
-    </button>
   }
 
   @JSExport
