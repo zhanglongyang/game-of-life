@@ -62,7 +62,10 @@ object GameOfLife extends JSApp {
           <tr style="text-align: center">
             {
               for (cellMap <- row.toList) yield {
-                <td style={s"width: 20px; height: 20px; ${if (cellMap._2.status.bind.eq("1")) "background-color: grey"}"}>
+                <td style={s"width: 20px; height: 20px; ${
+                  if (cellMap._2.status.bind == "1") "background-color: grey"
+                  else if (cellMap._2.status.bind == "-1") "background-color: red"}"
+                }>
                   {cellMap._2.status.bind}
                 </td>
               }
@@ -75,13 +78,15 @@ object GameOfLife extends JSApp {
 
   @dom def evolve: Binding[Button] = {
     <button onclick={e: Event => {
-      for (
+      (for (
         (loc, cell) <- data.cellsMap
         if cell.isAlive && (loc.neighbours.filter(data.cellsMap.get(_).get.isAlive).size > 0)
       ) yield {
         println(loc + "|" + cell.status.get)
-        cell.status := "0"
-      }
+        cell
+      }).foreach(c =>
+        c.status := "-1"
+      )
     }}>Evolve</button>
   }
 
