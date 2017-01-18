@@ -1,7 +1,7 @@
 import com.thoughtworks.binding.Binding.Var
 import com.thoughtworks.binding.{Binding, dom}
-import org.scalajs.dom.{Event, document}
-import org.scalajs.dom.html.{Button, Table}
+import org.scalajs.dom.document
+import org.scalajs.dom.html.Table
 
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
@@ -9,7 +9,7 @@ import scala.util.Random
 
 object GameOfLife extends JSApp {
 
-  case class Location(x: Integer, y: Integer) {
+  case class Location(x: Integer, y: Integer) extends Ordered[Location] {
     def isNeighbourOf(loc: Location): Boolean = {
       (Math.abs(this.x - loc.x) <= 1 && Math.abs(this.y - loc.y) <= 1) && !(this.equals(loc))
     }
@@ -30,6 +30,13 @@ object GameOfLife extends JSApp {
         Location(x + 1, y + 1)
       ).filter(_.isValid)
     }
+
+    override def compare(that: Location): Int = {
+      (this.x - that.x, this.y - that.y) match {
+        case (0, j) => j
+        case (i, _) => i
+      }
+    }
   }
 
   case class Cell(status: Var[String]) {
@@ -38,7 +45,7 @@ object GameOfLife extends JSApp {
 
   case class World(cellsMap: List[(Location, Cell)])
 
-  val size = 20
+  val size = 10
 
   val data = World(({
     for (i <- 0 to size - 1; j <- 0 to size - 1) yield {
