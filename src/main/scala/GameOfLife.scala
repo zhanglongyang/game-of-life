@@ -11,12 +11,8 @@ import scala.util.Random
 object GameOfLife extends JSApp {
 
   case class Location(x: Integer, y: Integer) extends Ordered[Location] {
-    def isNeighbourOf(loc: Location): Boolean = {
-      (Math.abs(this.x - loc.x) <= 1 && Math.abs(this.y - loc.y) <= 1) && !(this.equals(loc))
-    }
-
     def isValid: Boolean = {
-      (this.x > 0 && this.x < size) && (this.y > 0 && this.y < size)
+      (this.x >= 0 && this.x < size) && (this.y >= 0 && this.y < size)
     }
 
     def neighbours: List[Location] = {
@@ -46,7 +42,7 @@ object GameOfLife extends JSApp {
 
   case class World(cellsMap: TreeMap[Location, Cell])
 
-  val size = 10
+  val size = 4
 
   val data = World(TreeMap(({
     for (i <- 0 to size - 1; j <- 0 to size - 1) yield {
@@ -63,10 +59,12 @@ object GameOfLife extends JSApp {
       {
         import scalaz.std.list._
         for (row <- data.cellsMap.grouped(size).toList) yield {
-          <tr>
+          <tr style="text-align: center">
             {
               for (cellMap <- row.toList) yield {
-                <td style={s"width: 20px; height: 20px; ${if (cellMap._2.status.bind.eq("1")) "background-color: black"}"}></td>
+                <td style={s"width: 20px; height: 20px; ${if (cellMap._2.status.bind.eq("1")) "background-color: grey"}"}>
+                  {cellMap._2.status.bind}
+                </td>
               }
             }
           </tr>
@@ -79,7 +77,7 @@ object GameOfLife extends JSApp {
     <button onclick={e: Event => {
       for (
         (loc, cell) <- data.cellsMap
-//        if loc.neighbours.filter(data.cellsMap.get(_).get.status.eq("1")).size > 0
+        if cell.isAlive && (loc.neighbours.filter(data.cellsMap.get(_).get.isAlive).size > 0)
       ) yield {
         println(loc + "|" + cell.status.get)
         cell.status := "0"
