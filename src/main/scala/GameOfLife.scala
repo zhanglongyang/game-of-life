@@ -3,6 +3,7 @@ import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.document
 import org.scalajs.dom.html.Table
 
+import scala.collection.immutable.TreeMap
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
 import scala.util.Random
@@ -43,15 +44,17 @@ object GameOfLife extends JSApp {
     def isAlive: Boolean = this.status.get.eq("1")
   }
 
-  case class World(cellsMap: List[(Location, Cell)])
+  case class World(cellsMap: TreeMap[Location, Cell])
 
   val size = 10
 
-  val data = World(({
+  val data = World(TreeMap(({
     for (i <- 0 to size - 1; j <- 0 to size - 1) yield {
       (Location(i, j),  Cell(Var(randomStatus)))
     }
-  }).toList)
+  }): _*))
+
+  for (row <- data.cellsMap.grouped(size).toList) yield println(row)
 
   def randomStatus: String = {
     Random.nextInt(7).toString
@@ -61,15 +64,15 @@ object GameOfLife extends JSApp {
     <table border="1" cellPadding="5">
       {
         import scalaz.std.list._
-        data.cellsMap.grouped(size).toList.map(row => {
+        for (row <- data.cellsMap.grouped(size).toList) yield {
           <tr>
             {
-              row.map(cellMap => {
+              for (cellMap <- row.toList) yield {
                 <td style={s"width: 20px; height: 20px; ${if (cellMap._2.status.get.eq("1")) "background-color: black"}"}></td>
-              })
+              }
             }
           </tr>
-        })
+        }
       }
     </table>
   }
