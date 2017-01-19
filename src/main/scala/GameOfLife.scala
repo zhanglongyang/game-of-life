@@ -42,19 +42,17 @@ object GameOfLife extends JSApp {
 
   case class World(cellsMap: TreeMap[Location, Cell])
 
-  val size = 4
+  val size = 10
 
   val data = World(TreeMap(({
     for (i <- 0 to size - 1; j <- 0 to size - 1) yield {
-      (Location(i, j),  Cell(Var(randomStatus)))
+      (Location(i, j),  Cell(Var({
+        Random.nextInt(7).toString
+      })))
     }
   }): _*))
 
-  def randomStatus: String = {
-    Random.nextInt(7).toString
-  }
-
-  @dom def world: Binding[Table] = {
+  @dom def universe: Binding[Table] = {
     <table border="1" cellPadding="5">
       {
         import scalaz.std.list._
@@ -92,7 +90,7 @@ object GameOfLife extends JSApp {
 
   @dom def render: Binding[Div] = {
     <div>
-      {world.bind}
+      {universe.bind}
       {evolve.bind}
     </div>
   }
