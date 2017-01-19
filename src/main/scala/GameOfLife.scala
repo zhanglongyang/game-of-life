@@ -1,7 +1,9 @@
 import com.thoughtworks.binding.Binding.Var
 import com.thoughtworks.binding.{Binding, dom}
+import model.{Cell, Location, Universe}
 import org.scalajs.dom.{Event, document}
 import org.scalajs.dom.html.{Button, Div, Table}
+import pattern.StillLife
 
 import scala.collection.immutable.TreeMap
 import scala.scalajs.js.JSApp
@@ -10,47 +12,17 @@ import scala.util.Random
 
 object GameOfLife extends JSApp {
 
-  case class Location(x: Integer, y: Integer) extends Ordered[Location] {
-    def isValid: Boolean = {
-      (this.x >= 0 && this.x < size) && (this.y >= 0 && this.y < size)
-    }
+  val size = 4
 
-    def neighbours: List[Location] = {
-      List(
-        Location(x - 1, y - 1),
-        Location(x - 1, y),
-        Location(x - 1, y + 1),
-        Location(x, y - 1),
-        Location(x, y + 1),
-        Location(x + 1, y - 1),
-        Location(x + 1, y),
-        Location(x + 1, y + 1)
-      ).filter(_.isValid)
-    }
+//  val data = model.Universe(TreeMap(({
+//    for (i <- 0 to size - 1; j <- 0 to size - 1) yield {
+//      (model.Location(i, j),  model.Cell(Var({
+//        Random.nextInt(7).toString
+//      })))
+//    }
+//  }): _*))
 
-    override def compare(that: Location): Int = {
-      (this.x - that.x, this.y - that.y) match {
-        case (0, j) => j
-        case (i, _) => i
-      }
-    }
-  }
-
-  case class Cell(status: Var[String]) {
-    def isLive: Boolean = this.status.get.eq("1")
-  }
-
-  case class World(cellsMap: TreeMap[Location, Cell])
-
-  val size = 20
-
-  val data = World(TreeMap(({
-    for (i <- 0 to size - 1; j <- 0 to size - 1) yield {
-      (Location(i, j),  Cell(Var({
-        Random.nextInt(7).toString
-      })))
-    }
-  }): _*))
+  val data = Universe(StillLife.block)
 
   @dom def universe: Binding[Table] = {
     <table border="1" cellPadding="5">
