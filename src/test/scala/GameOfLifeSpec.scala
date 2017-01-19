@@ -5,7 +5,7 @@ import org.scalatest.{FlatSpec, Matchers}
 class GameOfLifeSpec extends FlatSpec with Matchers {
   "Cell" should "should be alive" in {
     val cell = Cell(Var("1"))
-    cell.isAlive shouldBe true
+    cell.isLive shouldBe true
   }
 
   "Location" should "be comparable" in {

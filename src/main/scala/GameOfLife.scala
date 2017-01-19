@@ -37,12 +37,12 @@ object GameOfLife extends JSApp {
   }
 
   case class Cell(status: Var[String]) {
-    def isAlive: Boolean = this.status.get.eq("1")
+    def isLive: Boolean = this.status.get.eq("1")
   }
 
   case class World(cellsMap: TreeMap[Location, Cell])
 
-  val size = 10
+  val size = 20
 
   val data = World(TreeMap(({
     for (i <- 0 to size - 1; j <- 0 to size - 1) yield {
@@ -74,17 +74,25 @@ object GameOfLife extends JSApp {
     </table>
   }
 
+  def judge(cell: Cell, location: Location): String = {
+    val liveNeighbours = location.neighbours.filter(data.cellsMap.get(_).get.isLive);
+
+    cell.status.get match {
+      case "1" => liveNeighbours.size match {
+        case n if n < 2 => "-1"
+        case n if n < 4 => "1"
+        case n if n > 3 => "-1"
+      }
+      case "-1" if liveNeighbours.size == 3 => "1"
+      case _ => cell.status.get
+    }
+  }
+
   @dom def evolve: Binding[Button] = {
     <button onclick={e: Event => {
-      (for (
-        (loc, cell) <- data.cellsMap
-        if cell.isAlive && (loc.neighbours.filter(data.cellsMap.get(_).get.isAlive).size > 0)
-      ) yield {
-        println(loc + "|" + cell.status.get)
-        cell
-      }).foreach(c =>
-        c.status := "-1"
-      )
+      data.cellsMap
+        .map{case (loc, cell) => (cell, judge(cell, loc))}
+        .foreach(result => (result._1.status := result._2))
     }}>Evolve</button>
   }
 
