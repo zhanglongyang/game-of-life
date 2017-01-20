@@ -13,7 +13,7 @@ object Pattern {
     TreeMap(({
       for (i <- 0 to size - 1; j <- 0 to size - 1) yield {
         (Location(i, j), Cell(Var({
-          Random.nextInt(7).toString
+          if (Random.nextInt(7) == 1) "1" else "-1"
         })))
       }
     }): _*)
