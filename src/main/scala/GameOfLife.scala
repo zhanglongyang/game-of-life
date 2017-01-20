@@ -4,6 +4,7 @@ import model.{Cell, Location, Universe}
 import org.scalajs.dom.{Event, document}
 import org.scalajs.dom.html.{Button, Div, Table}
 import pattern.StillLife
+import pattern.Oscillators
 
 import scala.collection.immutable.TreeMap
 import scala.scalajs.js.JSApp
@@ -12,7 +13,7 @@ import scala.util.Random
 
 object GameOfLife extends JSApp {
 
-  val size = 4
+  implicit val size: Integer = 5
 
 //  val data = model.Universe(TreeMap(({
 //    for (i <- 0 to size - 1; j <- 0 to size - 1) yield {
@@ -22,7 +23,8 @@ object GameOfLife extends JSApp {
 //    }
 //  }): _*))
 
-  val data = Universe(StillLife.block)
+//  val data = Universe(StillLife.block)
+  val data = Universe(Oscillators.blinker)
 
   @dom def universe: Binding[Table] = {
     <table border="1" cellPadding="5">
@@ -33,10 +35,8 @@ object GameOfLife extends JSApp {
             {
               for (cellMap <- row.toList) yield {
                 <td style={s"width: 20px; height: 20px; ${
-                  if (cellMap._2.status.bind == "1") "background-color: grey"
-                  else if (cellMap._2.status.bind == "-1") "background-color: red"}"
+                  if (cellMap._2.status.bind == "1") "background-color: black"}"
                 }>
-                  {cellMap._2.status.bind}
                 </td>
               }
             }
@@ -71,6 +71,7 @@ object GameOfLife extends JSApp {
   @dom def render: Binding[Div] = {
     <div>
       {universe.bind}
+      <br></br>
       {evolve.bind}
     </div>
   }

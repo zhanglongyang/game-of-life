@@ -1,9 +1,8 @@
 package model
 
-// TODO: implicit to pass size
-case class Location(x: Integer, y: Integer) extends Ordered[Location] {
+case class Location(x: Integer, y: Integer)(implicit val size: Integer) extends Ordered[Location] {
   def isValid: Boolean = {
-    (this.x >= 0 && this.x < 5) && (this.y >= 0 && this.y < 5)
+    (this.x >= 0 && this.x < size) && (this.y >= 0 && this.y < size)
   }
 
   def neighbours: List[Location] = {

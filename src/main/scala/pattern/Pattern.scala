@@ -1,0 +1,4 @@
+package pattern
+
+trait Pattern {
+}
