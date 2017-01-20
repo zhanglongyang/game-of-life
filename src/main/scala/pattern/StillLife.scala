@@ -5,7 +5,7 @@ import model.{Cell, Location}
 
 import scala.collection.immutable.TreeMap
 
-object StillLife extends Pattern {
+object StillLife {
   implicit val size: Integer = 4
 
   def block: TreeMap[Location, Cell] = {
