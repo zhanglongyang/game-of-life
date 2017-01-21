@@ -11,4 +11,6 @@ Every cell interacts with its eight neighbours. At each step in time, the follow
 - Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 
 ## Showcase
-<img align="center" src="./doc/random.gif"/>
+<p align="center">
+  <img src="./doc/random.gif"/>
+</p>
