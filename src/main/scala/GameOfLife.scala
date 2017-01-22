@@ -2,7 +2,7 @@ import com.thoughtworks.binding.{Binding, dom}
 import model.{Cell, Location, Universe}
 import org.scalajs.dom.{Event, document}
 import org.scalajs.dom.html.{Button, Div, Table}
-import pattern.{Oscillators, Pattern, StillLife}
+import pattern.{Oscillators, Pattern, Spaceships, StillLife}
 
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
@@ -11,7 +11,8 @@ object GameOfLife extends JSApp {
 
 //  val data = Universe(StillLife.block)
 //  val data = Universe(Oscillators.blinker)
-  val data = Universe(Pattern.random)
+//  val data = Universe(Pattern.random)
+  val data = Universe(Spaceships.glider)
 
   @dom def universe: Binding[Table] = {
     <table border="1" cellPadding="5">
