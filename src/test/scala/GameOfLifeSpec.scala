@@ -1,4 +1,3 @@
-import GameOfLife.{Cell, Location}
 import com.thoughtworks.binding.Binding.Var
 import model.{Cell, Location}
 import org.scalatest.{FlatSpec, Matchers}
@@ -10,6 +9,8 @@ class GameOfLifeSpec extends FlatSpec with Matchers {
   }
 
   "model.Location" should "be comparable" in {
+    implicit val size: Integer = 5
+
     Location(1, 2) == Location(1, 2) shouldBe true
     Location(1, 2) < Location(1, 3) shouldBe true
     Location(1, 2) < Location(2, 3) shouldBe true
