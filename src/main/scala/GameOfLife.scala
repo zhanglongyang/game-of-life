@@ -9,6 +9,9 @@ import scala.scalajs.js.annotation.JSExport
 
 object GameOfLife extends JSApp {
 
+  implicit def makeIntellijHappy[T<:org.scalajs.dom.raw.Node](x: scala.xml.Node): Binding[T] =
+    throw new AssertionError("This should never execute.")
+
 //  val data = Universe(StillLife.block)
 //  val data = Universe(Oscillators.blinker)
 //  val data = Universe(Pattern.random)
